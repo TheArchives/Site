@@ -1,17 +1,14 @@
-Ultros-site
-===========
+Site
+====
 
-[![Code Health](https://landscape.io/github/UltrosBot/Ultros-site/master/landscape.png)](https://landscape.io/github/UltrosBot/Ultros-site/master)
+[![Code Health](https://landscape.io/github/TheArchives/Site/master/landscape.png)](https://landscape.io/github/TheArchives/Site/master)
 
-This is the code for the site over at [Ultros.io](http://ultros.io).
+This will be the code for the site over at [ArchivesMC.com](https://archivesmc.com).
 
 Requirements:
 * bottle
 * beaker
-* cherrypy (For testing)
+* beaker_mongodb
 * mako
-* pymysql
-* rauth
 * requests
-* sqlalchemy
-* werkzeug
+* pymongo
