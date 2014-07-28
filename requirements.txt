@@ -1,0 +1,6 @@
+bottle
+beaker
+beaker_mongodb
+mako
+requests
+pymongo

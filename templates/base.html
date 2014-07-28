@@ -1,0 +1,37 @@
+<%page args="title='The Archives'"/>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>The Archives | <%block name="title"/></title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0" />
+    <!-- some meta tags, important for SEO-->
+    <meta name="description" content="<%block name="description" />" />
+    <meta name="keywords" content="<%block name="keywords" />" />
+    <meta name="revisit-after" content="7 days" />
+    <meta name="robots" content="index,follow" />
+
+    <link rel="shortcut icon" href="/static/images/icon.png" />
+    <link rel="apple-touch-icon-precomposed" href="/static/images/icon.png" />
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
+    <%block name="header"/>
+</head>
+<body>
+    ${self.body()}
+
+    ## JS to tell people to just upgrade you old browser already, dammit!
+    <script type="text/javascript">
+        var $buoop = {};
+        $buoop.ol = window.onload;
+        window.onload=function(){
+            try {if ($buoop.ol) $buoop.ol();} catch (e) {}
+            var e = document.createElement("script");
+            e.setAttribute("type", "text/javascript");
+            e.setAttribute("src", "//browser-update.org/update.js");
+            document.body.appendChild(e);
+        }
+    </script>
+</body>
+</html>
