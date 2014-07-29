@@ -9,10 +9,10 @@ logging.basicConfig(
     level=(logging.DEBUG if "--debug" in sys.argv else logging.INFO))
 
 
-def log(message, level=logging.DEBUG):
+def log(message, level=logging.INFO):
     logging.log(level, message)
 
 
-def log_request(request, message, level=logging.DEBUG):
+def log_request(request, message, level=logging.INFO):
     ip = request.remote_addr
     log("[%s] %s" % (ip, message), level)

@@ -16,13 +16,5 @@ class Routes(object):
 
     def index(self):
         db = self.manager.mongo
-        bots = db.get_collection("bots")
 
-        now = datetime.datetime.utcnow()
-        last_online = now - datetime.timedelta(minutes=10)
-
-        online = bots.find({
-            "last_seen": {"$gt": last_online}
-        }).count()
-
-        return template("templates/index.html", online=online)
+        return template("templates/index.html")

@@ -7,8 +7,11 @@ import yaml
 from beaker.middleware import SessionMiddleware
 from bottle import run, default_app, request, hook
 
+from internal.blocks import Blocks
+from internal.data import Data
 from internal.db import Db
 from internal.schemas import schemas
+from internal.templates import Templates
 from internal.util import log_request, log
 
 
@@ -41,14 +44,13 @@ class Manager(object):
         def setup_request():
             request.session = request.environ['beaker.session']
 
-        def log_all():
-            log_request(request, "%s %s " % (request.method, request.fullpath),
-                        logging.INFO)
-
         hook('before_request')(setup_request)
-        hook('after_request')(log_all)
 
         self.wrapped = SessionMiddleware(self.app, session_opts)
+
+        self.blocks = Blocks(self)
+        self.data = Data(self)
+        self.templates = Templates(self)
 
         self.routes = {}
         self.api_routes = []
@@ -68,10 +70,9 @@ class Manager(object):
                     mod = __import__("routes.%s" % module, fromlist=["Routes"])
                     self.routes[module] = mod.Routes(self.wrapped, self)
                 except Exception as e:
-                    log("Error loading routes module '%s': %s" % (module, e),
-                        logging.INFO)
+                    log("Error loading routes module '%s': %s" % (module, e))
 
-        log("%s routes set up." % len(self.app.routes), logging.INFO)
+        log("%s routes set up." % len(self.app.routes))
 
     def add_api_route(self, route):
         if route in self.api_routes:
@@ -89,23 +90,28 @@ class Manager(object):
             self.mongo.setup()
 
             for key in schemas.keys():
-                log("Adding schema for collection: %s" % key, logging.INFO)
+                log("Adding schema for collection: %s" % key)
                 self.mongo.add_schema(key, schemas[key])
 
             self.mongo.client.admin.command("ping")
-            log("Set up Mongo successfully.", logging.INFO)
+            log("Set up Mongo successfully.")
         except Exception as e:
             log("Unable to set up Mongo: %s" % e, logging.ERROR)
 
     def start(self):
+        def log_all():
+            log_request(request, "%s %s " % (request.method, request.fullpath))
+
+        hook('after_request')(log_all)
+
         try:
             config = yaml.load(open("config/development.yml", "r"))
             host = config.get("host", "127.0.0.1")
             port = config.get("port", 8080)
             server = config.get("server", "cherrypy")
         except Exception as e:
-            log("Unable to load development config: %s" % e, logging.INFO)
-            log("Continuing using the defaults.", logging.INFO)
+            log("Unable to load development config: %s" % e)
+            log("Continuing using the defaults.")
             host = "127.0.0.1"
             port = 8080
             server = "cherrypy"
